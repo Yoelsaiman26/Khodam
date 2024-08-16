@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pencari Khodam</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            padding-top: 20px;
+        }
+        .search-container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .result {
+            margin-top: 20px;
+        }
+        .khodam-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .description {
+            margin-top: 10px;
+            padding: 15px;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="search-container">
+            <h1 class="text-center">Pencari Khodam</h1>
+            <form id="searchForm">
+                <div class="mb-3">
+                    <label for="searchQuery" class="form-label">Masukkan kata kunci:</label>
+                    <input type="text" class="form-control" id="searchQuery" name="searchQuery" placeholder="Misal: Kudus" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Cari Khodam</button>
+            </form>
+            <div id="result" class="result"></div>
+        </div>
+    </div>
+
+    <script>
+        // Daftar tokoh Alkitab
+        const bibleCharacters = [
+            'Moses', 'Elijah', 'David', 'Solomon', 'Gideon', 'Samson', 'Daniel', 'Isaiah', 'Peter', 'Paul',
+            'Joshua', 'Esther', 'Ruth', 'Mary', 'John', 'James', 'Job', 'Hannah', 'Jeremiah', 'Ezra'
+        ];
+
+        // Daftar istilah acak
+        const randomWords = [
+            'Agung', 'Sakti', 'Cemerlang', 'Berkah', 'Kudus', 'Bijaksana', 'Suci', 'Terang', 'Kuat', 'Damai',
+            'Penuh Berkat', 'Cahaya', 'Mulia', 'Hikmat', 'Sejati', 'Mulia', 'Harmoni', 'Ilahi', 'Abadi', 'Berkah'
+        ];
+
+        // Daftar penjelasan khodam
+        const descriptions = {
+            'Moses Agung': 'Khodam yang melambangkan kepemimpinan dan pembebasan. Membantu Anda untuk memimpin dan menghadapi tantangan besar.',
+            'Elijah Sakti': 'Khodam dengan kekuatan spiritual yang besar. Membantu Anda dalam mencapai tujuan dengan kekuatan batin.',
+            'David Cemerlang': 'Khodam yang melambangkan keberanian dan kejayaan. Membantu Anda untuk mencapai kejayaan dalam hidup.',
+            'Solomon Berkah': 'Khodam yang memberi kebijaksanaan dan berkat. Membantu Anda dalam mengambil keputusan yang bijaksana.',
+            'Gideon Kudus': 'Khodam dengan karakter kepemimpinan yang kudus. Membantu Anda menghadapi tantangan dengan keberanian.',
+            'Samson Bijaksana': 'Khodam yang melambangkan kekuatan dan kebijaksanaan. Membantu Anda untuk menemukan kekuatan dalam diri.',
+            'Daniel Suci': 'Khodam dengan karakter ketulusan dan kesucian. Membantu Anda untuk tetap suci dan terhindar dari godaan.',
+            'Isaiah Terang': 'Khodam yang memberi pencerahan dan terang. Membantu Anda untuk melihat jalan dan tujuan hidup yang jelas.',
+            'Peter Kuat': 'Khodam dengan kekuatan dan keberanian seperti Peter. Membantu Anda dalam menghadapi tantangan dengan kekuatan.',
+            'Paul Damai': 'Khodam yang melambangkan perdamaian dan harmoni. Membantu Anda untuk mencapai kedamaian batin dan luar.',
+            'Joshua Penuh Berkat': 'Khodam yang memberi berkat dan kemenangan. Membantu Anda untuk meraih berkat dan kesuksesan dalam hidup.',
+            'Esther Cahaya': 'Khodam dengan karakter pencerahan dan keberanian. Membantu Anda dalam menghadapi tantangan dengan cahaya.',
+            'Ruth Mulia': 'Khodam yang memberi kehormatan dan kebanggaan. Membantu Anda untuk menemukan kehormatan dan kesuksesan.',
+            'Mary Hikmat': 'Khodam yang melambangkan kebijaksanaan dan kesucian. Membantu Anda untuk mencapai kebijaksanaan dalam keputusan.',
+            'John Sejati': 'Khodam dengan karakter kebenaran dan kejujuran. Membantu Anda untuk tetap pada jalan kebenaran.',
+            'James Harmoni': 'Khodam yang memberi harmoni dan keseimbangan. Membantu Anda mencapai keseimbangan dalam hidup.',
+            'Job Ilahi': 'Khodam dengan karakter ketahanan dan iman ilahi. Membantu Anda untuk tetap beriman dalam menghadapi kesulitan.',
+            'Hannah Abadi': 'Khodam yang melambangkan kesetiaan dan abadi. Membantu Anda dalam mencapai tujuan yang abadi dan penting.',
+            'Jeremiah Berkah': 'Khodam yang memberi berkat dan penghiburan. Membantu Anda untuk mendapatkan berkat dan penghiburan dalam hidup.',
+            'Ezra Mulia': 'Khodam yang melambangkan kehormatan dan pembaharuan. Membantu Anda untuk memperbaharui diri dan mencapai kehormatan.'
+        };
+
+        document.getElementById('searchForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const query = document.getElementById('searchQuery').value;
+            const resultDiv = document.getElementById('result');
+
+            // Fungsi untuk menghasilkan nama khodam acak
+            function generateKhodamName() {
+                const randomCharacter = bibleCharacters[Math.floor(Math.random() * bibleCharacters.length)];
+                const randomWord = randomWords[Math.floor(Math.random() * randomWords.length)];
+                return `${randomCharacter} ${randomWord}`;
+            }
+
+            // Hasil pencarian
+            const khodamName = generateKhodamName();
+            const description = descriptions[khodamName] || 'Maaf, deskripsi untuk khodam ini tidak tersedia.';
+            resultDiv.innerHTML = `<h2>Hasil Pencarian untuk: <strong>${query}</strong></h2>
+                                   <p>Nama khodam acak yang ditemukan: <span class="khodam-name">${khodamName}</span></p>
+                                   <div class="description">${description}</div>`;
+        });
+    </script>
+
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>
